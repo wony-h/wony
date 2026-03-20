@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Discovery Kids VMD 운영 대시보드</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800;900&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F4F1EC;--sf:#FFF;--sf2:#EDE9E1;--bd:#DDD8CF;--bdl:#EAE6DF;--t1:#2C2A26;--t2:#5C5850;--t3:#9B9588;--ol:#4B5320;--ol-l:#E8EDDA;--ol-d:#3A4119;--sk:#AFC4D6;--sk-l:#E4EDF4;--sk-d:#6B8DA8;--be:#E8DFC7;--rd:#B04A3A;--rd-l:#F5E3DF;--gn:#4A7C59;--gn-l:#DCE9DF;--r:12px;--rs:8px;--sh:0 1px 3px rgba(44,42,38,.06),0 1px 2px rgba(44,42,38,.04);--shm:0 4px 12px rgba(44,42,38,.07);--tr:.2s cubic-bezier(.4,0,.2,1)}
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--t1);line-height:1.6;-webkit-font-smoothing:antialiased}
+.W{max-width:1360px;margin:0 auto;padding:0 36px 100px}
+.hd{padding:44px 0 24px;border-bottom:1px solid var(--bd);margin-bottom:24px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:14px}
+.hd h1{font-size:25px;font-weight:800;letter-spacing:-.4px;display:flex;align-items:center;gap:9px}.hd h1 i{width:5px;height:30px;background:var(--ol);border-radius:3px;display:inline-block}
+.hd-s{font-size:12px;color:var(--t3);margin-top:3px}.hd-m{text-align:right;font-size:11px;color:var(--t3);line-height:1.8}.hd-m b{color:var(--t2)}
+.wt{display:flex;gap:4px;background:var(--sf2);padding:3px;border-radius:9px;width:fit-content;margin-top:14px}
+.wb{padding:6px 16px;border-radius:6px;border:none;background:0;font-family:inherit;font-size:11px;font-weight:500;color:var(--t3);cursor:pointer;transition:var(--tr);white-space:nowrap}
+.wb:hover{color:var(--t2);background:rgba(255,255,255,.5)}.wb.on{background:var(--sf);color:var(--t1);font-weight:700;box-shadow:var(--sh)}
+.nt{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:20px 24px;margin-bottom:22px;position:relative;overflow:hidden}
+.nt::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:var(--ol)}
+.nt-l{font-size:9px;font-weight:700;color:var(--ol);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:7px}
+.nt-t{font-size:14px;font-weight:700;margin-bottom:9px}
+.ch{display:flex;flex-wrap:wrap;gap:5px}.cp{padding:3px 10px;border-radius:18px;font-size:10px;font-weight:500;background:var(--sf2);color:var(--t2);border:1px solid var(--bdl)}
+.cp.m{background:var(--ol-l);color:var(--ol-d);border-color:transparent}.cp.s{background:var(--sk-l);color:var(--sk-d);border-color:transparent}
+.kg{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:22px}
+.kc{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:18px 20px;transition:var(--tr)}.kc:hover{box-shadow:var(--shm);transform:translateY(-1px)}
+.kl{font-size:9px;font-weight:600;color:var(--t3);letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px}
+.kv{font-family:'DM Sans',sans-serif;font-size:28px;font-weight:700;line-height:1.1}.kv.ol{color:var(--ol)}.kv.sk{color:var(--sk-d)}.kv.gn{color:var(--gn)}.kv.rd{color:var(--rd)}
+.kd{font-size:10px;font-weight:500;margin-top:4px}.kd.up{color:var(--gn)}.kd.dn{color:var(--rd)}.kd.nt2{color:var(--t3)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:22px}.g2.r64{grid-template-columns:3fr 2fr}.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:22px}
+.cd{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:20px}
+.cdh{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.cdt{font-size:13px;font-weight:700}
+.bg{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:14px;font-size:9px;font-weight:600;white-space:nowrap}
+.bg-gn{background:var(--gn-l);color:var(--gn)}.bg-rd{background:var(--rd-l);color:var(--rd)}.bg-ol{background:var(--ol-l);color:var(--ol)}.bg-sk{background:var(--sk-l);color:var(--sk-d)}.bg-gy{background:var(--sf2);color:var(--t3);border:1px solid var(--bdl)}
+.st{font-size:16px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:6px}.st .d{width:6px;height:6px;border-radius:50%;background:var(--ol)}.ss{font-size:10px;color:var(--t3);margin-bottom:14px}
+.cc{position:relative;width:100%;height:270px}
+.ts{max-height:400px;overflow-y:auto}.ts::-webkit-scrollbar{width:3px}.ts::-webkit-scrollbar-thumb{background:var(--bd);border-radius:2px}
+table.dt{width:100%;border-collapse:collapse;font-size:11px}
+.dt thead th{padding:8px 9px;text-align:left;font-weight:600;font-size:9px;color:var(--t3);letter-spacing:.4px;text-transform:uppercase;border-bottom:2px solid var(--bd);white-space:nowrap}
+.dt tbody td{padding:8px 9px;border-bottom:1px solid var(--bdl);color:var(--t2);vertical-align:middle}.dt tbody tr:hover{background:var(--sf2)}.dt tbody tr:last-child td{border-bottom:none}
+.dt .nm{font-family:'DM Sans',sans-serif;font-weight:600;color:var(--t1)}.dt .sn{font-weight:600;color:var(--t1)}
+.ig{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:22px}
+.ic{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:14px 16px;display:flex;align-items:center;gap:12px;transition:var(--tr)}.ic:hover{box-shadow:var(--shm);transform:translateY(-1px)}
+.ir{font-family:'DM Sans';font-size:20px;font-weight:800;color:var(--t3);min-width:26px;text-align:center}.ir.tp{color:var(--ol)}
+.inf{flex:1}.inm{font-size:11px;font-weight:600;margin-bottom:1px}.inc{font-size:9px;color:var(--t3);font-family:'DM Sans',monospace}
+.isl{text-align:right}.iam{font-family:'DM Sans';font-size:16px;font-weight:700}.ish{font-size:9px;color:var(--t3)}
+.rc{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:16px 18px;margin-bottom:9px;display:flex;gap:12px;align-items:flex-start;position:relative;overflow:hidden}
+.rc::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--ol)}
+.rc-r{font-family:'DM Sans';font-size:18px;font-weight:800;color:var(--ol);min-width:22px}
+.rc-n h4{font-size:12px;font-weight:700;margin-bottom:2px}.rc-n .sb{font-size:10px;color:var(--t2);line-height:1.4}
+.rc-n .rs{font-size:10px;color:var(--ol);font-weight:600;margin-top:4px;padding:2px 7px;background:var(--ol-l);border-radius:4px;display:inline-block}
+.rc-n .dp{font-size:10px;color:var(--sk-d);font-weight:500;margin-top:3px;padding:2px 7px;background:var(--sk-l);border-radius:4px;display:inline-block}
+.ins{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:16px 18px;position:relative;overflow:hidden}
+.ins::before{content:'';position:absolute;top:0;left:0;width:100%;height:3px}
+.ins.ps::before{background:var(--gn)}.ins.wr::before{background:#D4A017}.ins.ac::before{background:var(--ol)}
+.ins-i{width:28px;height:28px;border-radius:var(--rs);display:flex;align-items:center;justify-content:center;font-size:14px;margin-bottom:9px}
+.ins-i.ps{background:var(--gn-l)}.ins-i.wr{background:#FDF3D7}.ins-i.ac{background:var(--ol-l)}
+.ins h4{font-size:11px;font-weight:700;margin-bottom:4px}.ins p{font-size:10px;color:var(--t2);line-height:1.5}
+#pdfPanel{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:18px;text-align:center}
+#pdfPanel .pl{font-size:9px;font-weight:700;color:var(--ol);letter-spacing:1px;text-transform:uppercase;margin-bottom:9px}
+#pdfThumb{width:100%;max-height:340px;object-fit:contain;border-radius:var(--rs);border:1px solid var(--bdl);cursor:pointer;transition:var(--tr)}
+#pdfThumb:hover{box-shadow:var(--shm);transform:scale(1.01)}
+#pdfName{font-size:10px;color:var(--t3);margin-top:7px}
+.cr{display:flex;align-items:center;gap:9px;margin-bottom:11px}.cl{font-size:10px;font-weight:500;color:var(--t2);width:65px;flex-shrink:0}
+.cbg{flex:1;height:24px;background:var(--sf2);border-radius:5px;overflow:hidden}
+.cf{height:100%;border-radius:5px;display:flex;align-items:center;padding-left:7px;transition:width .8s cubic-bezier(.4,0,.2,1)}.cf span{font-size:9px;font-weight:700;color:#fff}
+.cf.a{background:var(--ol)}.cf.b{background:var(--sk-d);opacity:.5}
+.cv{font-family:'DM Sans';font-size:11px;font-weight:700;width:60px;text-align:right;flex-shrink:0}
+.an{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:14px 16px;margin-bottom:7px}
+.an-t{font-size:11px;font-weight:700;display:flex;align-items:center;gap:4px;margin-bottom:3px}.an-d{font-size:10px;color:var(--t2);line-height:1.4}
+/* NEW: VMD Summary */
+.vmd-sum{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:22px}
+.vmd-it{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:16px 18px;position:relative;overflow:hidden}
+.vmd-it::before{content:'';position:absolute;top:0;left:0;width:100%;height:3px}
+.vmd-it.done::before{background:var(--gn)}.vmd-it.part::before{background:#D4A017}.vmd-it.no::before{background:var(--rd)}
+.vmd-it .vi-t{font-size:11px;font-weight:700;margin-bottom:4px}.vmd-it .vi-s{font-size:10px;color:var(--t2);line-height:1.4}
+.vmd-it .vi-b{margin-top:6px}
+/* NEW: Case cards with images */
+.case-g{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:22px}
+.case-c{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;transition:var(--tr)}
+.case-c:hover{box-shadow:var(--shm);transform:translateY(-1px)}
+.case-img{width:100%;height:200px;object-fit:cover;display:block;border-bottom:1px solid var(--bdl)}
+.case-body{padding:16px 18px}
+.case-body h4{font-size:12px;font-weight:700;margin-bottom:3px;display:flex;align-items:center;gap:5px}
+.case-body .c-grade{font-size:10px;padding:1px 7px;border-radius:10px}
+.case-body .c-eval{font-size:10px;color:var(--t2);line-height:1.5;margin-top:5px}
+.case-body .c-tag{display:flex;flex-wrap:wrap;gap:4px;margin-top:7px}
+.case-body .c-tag span{font-size:9px;padding:2px 7px;border-radius:10px;background:var(--sf2);color:var(--t3)}
+/* NEW: Action plan */
+.ap{background:var(--ol-d);border-radius:var(--r);padding:28px 32px;margin-bottom:22px;color:#fff}
+.ap h3{font-size:17px;font-weight:800;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.ap-g{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ap-i{background:rgba(255,255,255,.1);border-radius:var(--rs);padding:14px 16px;border:1px solid rgba(255,255,255,.12)}
+.ap-i .ap-t{font-size:11px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:5px}
+.ap-i .ap-d{font-size:10px;color:rgba(255,255,255,.7);line-height:1.5}
+.ap-i .ap-w{font-size:9px;color:rgba(255,255,255,.45);margin-top:5px}
+/* Guide */
+.gu{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:24px 28px;margin-top:32px}
+.gu h3{font-size:14px;font-weight:700;margin-bottom:12px}
+.gu-t{font-size:11px;color:var(--t2);margin-bottom:12px;line-height:1.7}
+.gs{display:flex;gap:9px;margin-bottom:10px;align-items:flex-start}.gn2{width:20px;height:20px;border-radius:50%;background:var(--ol);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}.gd{font-size:11px;color:var(--t2);line-height:1.5}.gd b{color:var(--t1)}
+/* Slideshow for notice photos */
+.slide-wrap{position:relative;width:100%;height:320px;border-radius:var(--r);overflow:hidden;margin-bottom:18px;background:var(--sf);border:1px solid var(--bd)}
+.slide-wrap img{width:100%;height:100%;object-fit:contain;position:absolute;top:0;left:0;opacity:0;transition:opacity .6s ease}
+.slide-wrap img.active{opacity:1}
+.slide-dots{display:flex;justify-content:center;gap:6px;margin-top:8px;margin-bottom:16px}
+.slide-dot{width:8px;height:8px;border-radius:50%;background:var(--bd);border:none;cursor:pointer;transition:var(--tr);padding:0}
+.slide-dot.on{background:var(--ol);transform:scale(1.2)}
+/* Full-view store case images */
+.case-img-full{width:100%;height:auto;max-height:400px;object-fit:contain;border-radius:var(--r);border:1px solid var(--bdl);margin-bottom:12px;display:block;background:var(--sf2)}
+/* SIDEBAR NAV */
+.shell{display:flex;min-height:100vh}
+.side{width:210px;background:var(--sf);border-right:1px solid var(--bd);position:fixed;top:0;left:0;bottom:0;z-index:100;display:flex;flex-direction:column;overflow-y:auto}.side::-webkit-scrollbar{width:0}
+.side-hd{padding:18px 16px 14px;border-bottom:1px solid var(--bdl)}.side-hd h2{font-size:13px;font-weight:800;color:var(--ol);display:flex;align-items:center;gap:6px}.side-hd h2 i{width:4px;height:20px;background:var(--ol);border-radius:2px;display:inline-block}.side-hd .sd-sub{font-size:8px;color:var(--t3);margin-top:2px}
+.side-wk{padding:10px 12px;border-bottom:1px solid var(--bdl)}.side-wk-lbl{font-size:7px;font-weight:700;color:var(--t3);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px}
+.wk-list{display:flex;flex-direction:column;gap:2px}
+.wk-btn2{padding:6px 10px;border-radius:6px;border:none;background:0;font-family:inherit;font-size:10px;font-weight:500;color:var(--t2);cursor:pointer;transition:var(--tr);text-align:left;display:flex;justify-content:space-between}.wk-btn2:hover{background:var(--sf2)}.wk-btn2.on{background:var(--ol-l);color:var(--ol-d);font-weight:700}.wk-btn2 .wk-p{font-size:8px;color:var(--t3)}
+.side-nav{flex:1;padding:8px 0}
+.nav-lbl{font-size:7px;font-weight:700;color:var(--t3);letter-spacing:1px;text-transform:uppercase;padding:6px 16px 3px}
+.nav-btn2{display:flex;align-items:center;gap:7px;padding:8px 16px;border:none;background:0;font-family:inherit;font-size:10px;font-weight:500;color:var(--t2);cursor:pointer;transition:var(--tr);width:100%;text-align:left;border-left:3px solid transparent}
+.nav-btn2:hover{background:var(--sf2);color:var(--t1)}.nav-btn2.on{background:var(--ol-l);color:var(--ol-d);font-weight:700;border-left-color:var(--ol)}
+.nav-btn2 .ni{font-size:12px;width:18px;text-align:center;flex-shrink:0}
+.main-area{margin-left:210px;flex:1;padding:24px 28px 80px;max-width:1130px}
+.sec-pnl{display:none}.sec-pnl.show{display:block}
+@media(max-width:1100px){.side{display:none}.main-area{margin-left:0}.kg{grid-template-columns:repeat(2,1fr)}.g2,.g2.r64{grid-template-columns:1fr}.g3{grid-template-columns:1fr}.ig{grid-template-columns:1fr}.vmd-sum{grid-template-columns:1fr 1fr}.case-g{grid-template-columns:1fr}.ap-g{grid-template-columns:1fr}}
+@keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}.ai{animation:fi .3s ease-out forwards}
+</style>
+</head>
+<body>
+<div class="shell">
+<aside class="side">
+<div class="side-hd"><h2><i></i>DK VMD</h2><div class="sd-sub">Discovery Kids · 운영 대시보드</div></div>
+<div class="side-wk"><div class="side-wk-lbl">주차 선택</div><div class="wk-list" id="wkList"></div></div>
+<nav class="side-nav">
+<div class="nav-lbl">분석 섹션</div>
+<button class="nav-btn2 on" onclick="goSec('overview')"><span class="ni">📊</span>Overview</button>
+<button class="nav-btn2" onclick="goSec('vmd')"><span class="ni">🏪</span>VMD 실행</button>
+<button class="nav-btn2" onclick="goSec('sales')"><span class="ni">📈</span>연출 vs 매출</button>
+<button class="nav-btn2" onclick="goSec('stores')"><span class="ni">🏬</span>매장 + 사례</button>
+<button class="nav-btn2" onclick="goSec('items')"><span class="ni">👕</span>상품 성과</button>
+<button class="nav-btn2" onclick="goSec('recommend')"><span class="ni">⭐</span>추천 상품</button>
+<button class="nav-btn2" onclick="goSec('action')"><span class="ni">🎯</span>액션 플랜</button>
+</nav>
+</aside>
+<div class="main-area">
+<div class="W" style="padding-top:0">
+
+<!-- SEC: Overview -->
+<div class="sec-pnl show" id="sec-overview">
+<header class="hd" style="padding-top:24px">
+<div>
+  <h1 id="secTitle" style="font-size:20px"><i></i>Overview</h1>
+  <div class="hd-s">매장 공지 이행 × 연출 × 매출 연계 분석</div>
+</div>
+<div class="hd-m"><div>분석 기간 <b>2026.03.01 ~ 03.22</b></div><div>단독매장 · 외형매출</div></div>
+</header>
+
+<div class="nt"><div class="nt-l">VMD 공지 요약 · 3/9~3/22</div><div class="nt-t">KIDS 매장 연출안 + 비주얼 + 영상 교체</div><div class="ch"><span class="cp m">MAIN: 우븐TRTP</span><span class="cp s">SUB: WJ 방풍자켓</span><span class="cp s">SUB: 면TRTP</span><span class="cp">DT: DKAZ12061 세트</span><span class="cp">DT: DKSH4103N 슈즈</span><span class="cp">DT: GIRLS 글로시 가방</span><span class="cp">MNQ 착장 4체</span><span class="cp">LCD/DID 영상</span></div></div>
+
+<div class="kg" id="kg"></div>
+
+<!-- Notice Photo Slideshow -->
+<div class="st"><span class="d"></span> 매장 공지 연출안</div>
+<div class="slide-wrap" id="slideWrap"></div>
+<div class="slide-dots" id="slideDots"></div>
+
+<!-- end overview section -->
+</div>
+
+<!-- SEC: VMD 실행 -->
+<div class="sec-pnl" id="sec-vmd">
+<!-- VMD 실행 요약 -->
+<div style="margin-bottom:22px"><div class="st"><span class="d"></span> VMD 실행 요약</div><div class="ss">공지 항목별 이행 현황 · 주차별 갱신</div><div class="vmd-sum" id="vmdSum"></div></div>
+
+<!-- end vmd -->
+</div>
+
+<!-- SEC: 연출 vs 매출 -->
+<div class="sec-pnl" id="sec-sales">
+<!-- 연출 vs 매출 분석 -->
+<div class="g2 r64" style="margin-bottom:18px">
+<div class="cd"><div class="cdh"><div class="cdt">이행 vs 미이행 매장 매출 비교</div><span class="bg bg-ol" id="cb">W2</span></div><div class="cc"><canvas id="cC"></canvas></div></div>
+<div class="cd"><div class="cdh"><div class="cdt">주차별 총매출 추이</div></div><div class="cc"><canvas id="tC"></canvas></div></div>
+</div>
+
+<div class="g2" style="margin-bottom:18px">
+<div class="cd"><div class="cdh"><div class="cdt">연출 vs 매출 연계 분석</div></div><div id="cB"></div><div id="dispVsSales" style="margin-top:14px"></div></div>
+<div class="cd"><div class="cdh"><div class="cdt">카테고리별 매출 구성</div></div><div class="cc" style="height:240px"><canvas id="caC"></canvas></div></div>
+</div>
+
+<!-- end sales -->
+</div>
+
+<!-- SEC: 매장 현황 + 사례 분석 -->
+<div class="sec-pnl" id="sec-stores">
+<div class="cd" style="margin-bottom:18px">
+  <div class="cdh"><div class="cdt">매장별 VMD 점수 & 매출</div><span class="bg bg-gy" id="scb">23개</span></div>
+  <div class="ts"><table class="dt"><thead><tr><th>매장명</th><th>유형</th><th>이행</th><th>VMD등급</th><th>주간매출</th><th>전년비</th><th>비고</th></tr></thead><tbody id="stb"></tbody></table></div>
+</div>
+<div class="cd" style="margin-bottom:18px"><div class="cdh"><div class="cdt">이상치 매장</div></div><div id="aS"></div></div>
+
+<!-- 우수 사례 (매장 현황에 통합) -->
+<div style="margin-bottom:18px"><div class="st"><span class="d"></span> 우수 사례</div><div class="ss">VMD 이행 + 매출 성과 우수 매장 · 매장 사진 포함</div><div id="bestCases"></div></div>
+<div style="margin-bottom:18px"><div class="st"><span class="d"></span> 이상 사례</div><div class="ss">VMD 미이행 또는 이행 대비 성과 부진 매장</div><div id="worstCases"></div></div>
+<!-- end stores -->
+</div>
+
+<!-- SEC: 상품 성과 -->
+<div class="sec-pnl" id="sec-items">
+<div style="margin-bottom:22px"><div class="st"><span class="d"></span> 상품 성과 해석</div><div class="ss">VMD 연출안 지정 8개 품번 · 연출 효과 분석</div><div class="ig" id="iG"></div><div id="itemInterpret"></div></div>
+<div class="g2" style="margin-bottom:22px">
+<div class="cd"><div class="cdh"><div class="cdt">공지 품목 매출 추이</div></div><div class="cc" style="height:240px"><canvas id="iTC"></canvas></div></div>
+<div class="cd"><div class="cdh"><div class="cdt">카테고리 아이템 분석</div></div><div class="cc" style="height:240px"><canvas id="ciC"></canvas></div></div>
+</div>
+<!-- end items -->
+</div>
+
+<!-- SEC: 추천 상품 -->
+<div class="sec-pnl" id="sec-recommend">
+<div style="margin-bottom:22px"><div class="st"><span class="d"></span> 추천 상품 + 연출 제안</div><div class="ss">매출 성과 + 성장률 + 이행매장 효과 기반 · 연출 방법 포함</div><div id="rL"></div></div>
+<!-- end recommend -->
+</div>
+
+<!-- cases merged into stores above -->
+
+<!-- SEC: 액션 플랜 -->
+<div class="sec-pnl" id="sec-action">
+<div id="actionPlan"></div>
+<div style="margin-top:18px"><div class="st"><span class="d"></span> 이번 주 인사이트</div><div class="g3" id="iN"></div></div>
+<!-- end action -->
+</div>
+
+</div><!-- end W -->
+</div><!-- end main-area -->
+</div><!-- end shell -->
+
+<script>
+const IM=[
+{code:"DKSH4103N",name:"마운틴 LT 키즈",role:"DT 메인슈즈",cat:"슈즈"},
+{code:"DKAZ12061",name:"여아 맨투맨+팬츠+반팔티 3SET",role:"DT (NEW)",cat:"세트"},
+{code:"DKTR13061",name:"여아 하이넥 우븐 자켓",role:"MAIN MNQ(여)",cat:"트레이닝"},
+{code:"DKWJ13061",name:"여아 크롭 카라 자켓",role:"SUB MNQ(여)",cat:"방풍자켓"},
+{code:"DKWJ21061",name:"키즈 베르텍스 멀티유즈 자켓",role:"SUB MNQ(남)",cat:"방풍자켓"},
+{code:"DKTR12061",name:"키즈 하이넥 오버핏 우븐 자켓",role:"MAIN MNQ(남)",cat:"트레이닝"},
+{code:"DKBG2266N",name:"GIRLS 글로시 미니 백팩",role:"DT (NEW)",cat:"가방"},
+{code:"DKCR2276N",name:"GIRLS 글로시 호보백",role:"DT (NEW)",cat:"가방"},
+];
+
+const D={
+"w1":{
+label:"1주차",period:"03.01~08",periodShort:"W1",note:"공지 전 Baseline",
+noticePdf:"",noticeThumbnail:"",
+noticePhotos:[],
+totalSales:36497,
+stores:[
+{name:"K_신세계김해",type:"백화점",status:"—",score:0,ws26:4977,ws25:9505,note:"",storeImage:""},
+{name:"K_신세계대전",type:"백화점",status:"—",score:0,ws26:4269,ws25:1500,note:"신규출점",storeImage:""},
+{name:"K_신세계영등포",type:"백화점",status:"—",score:0,ws26:2332,ws25:1006,note:"확장",storeImage:""},
+{name:"K_AK수원",type:"백화점",status:"—",score:0,ws26:1263,ws25:920,note:"",storeImage:""},
+{name:"K_신세계마산",type:"백화점",status:"—",score:0,ws26:1279,ws25:1028,note:"",storeImage:""},
+{name:"K_신세계본점",type:"백화점",status:"—",score:0,ws26:418,ws25:858,note:"",storeImage:""},
+{name:"K_롯데인천",type:"백화점",status:"—",score:0,ws26:1561,ws25:1728,note:"",storeImage:""},
+{name:"K_신세계천안아산",type:"백화점",status:"—",score:0,ws26:1277,ws25:983,note:"",storeImage:""},
+{name:"K_현대울산",type:"백화점",status:"—",score:0,ws26:1428,ws25:1402,note:"",storeImage:""},
+{name:"K_롯데평촌",type:"백화점",status:"—",score:0,ws26:1198,ws25:1650,note:"",storeImage:""},
+{name:"K_신세계하남",type:"백화점",status:"—",score:0,ws26:819,ws25:1181,note:"",storeImage:""},
+{name:"K_LF스퀘어광양",type:"백화점",status:"—",score:0,ws26:1485,ws25:1384,note:"",storeImage:""},
+{name:"K_롯데울산",type:"백화점",status:"—",score:0,ws26:1245,ws25:1795,note:"",storeImage:""},
+{name:"K_롯데부산",type:"백화점",status:"—",score:0,ws26:2198,ws25:2161,note:"",storeImage:""},
+{name:"K_롯데광복",type:"백화점",status:"—",score:0,ws26:1607,ws25:1520,note:"",storeImage:""},
+{name:"K_롯데대구",type:"백화점",status:"—",score:0,ws26:1076,ws25:1191,note:"",storeImage:""},
+{name:"K_갤러리아센터시티",type:"백화점",status:"—",score:0,ws26:631,ws25:1360,note:"",storeImage:""},
+{name:"K_롯데건대",type:"백화점",status:"—",score:0,ws26:1020,ws25:1283,note:"",storeImage:""},
+{name:"K_롯데수원",type:"백화점",status:"—",score:0,ws26:607,ws25:1028,note:"",storeImage:""},
+{name:"K_신세계의정부",type:"백화점",status:"—",score:0,ws26:375,ws25:1486,note:"",storeImage:""},
+{name:"K_롯데잠실",type:"신규",status:"—",score:0,ws26:806,ws25:0,note:"신규",storeImage:""},
+{name:"K_현대천호",type:"신규",status:"—",score:0,ws26:707,ws25:0,note:"신규",storeImage:""},
+{name:"K_롯데아울렛수완(직)",type:"직영",status:"—",score:0,ws26:1811,ws25:1900,note:"",storeImage:""},
+],
+items:[
+{code:"DKSH4103N",sales:180,catTotal:1800},{code:"DKAZ12061",sales:0,catTotal:3500},
+{code:"DKTR13061",sales:65,catTotal:4700},{code:"DKWJ13061",sales:50,catTotal:1700},
+{code:"DKWJ21061",sales:40,catTotal:1700},{code:"DKTR12061",sales:30,catTotal:4700},
+{code:"DKBG2266N",sales:0,catTotal:6100},{code:"DKCR2276N",sales:0,catTotal:6100},
+],
+categories:{"BK(백팩)":11200,"PD(패딩)":5290,"AZ(세트)":4498,"TR(트레이닝)":3175,"WJ(방풍)":3126,"TP(팬츠TR)":1967,"PT(우븐팬츠)":1081,"RS(반팔)":756,"기타":4404},
+vmdExec:[
+{item:"조닝 구성",status:"no",desc:"공지 전 — 미적용"},
+{item:"DT 연출",status:"no",desc:"공지 전 — 미적용"},
+{item:"마네킹 착장",status:"no",desc:"공지 전 — 미적용"},
+{item:"비주얼/영상",status:"no",desc:"공지 전 — 미적용"},
+],
+itemInterpret:"공지 전 기간으로 VMD 연출 효과 분석 대상 아님. NEW 품번(DKAZ12061, DKBG2266N, DKCR2276N) 미출고 상태.",
+dispVsSales:"공지 전 Baseline 기간. 이행/미이행 구분 없이 전 매장 동일 조건.",
+recommendations:[
+{code:"DKBK3105N",name:"라이크에어 하이퍼 백팩 20L",metric:"9,026만",reason:"전채널 1위 — 신학기 피크 마감 전 재고 확보",display:""},
+{code:"DKPD11061",name:"키즈 후드 디태처블 봄버 패딩",metric:"+53.5%",reason:"저기온 수요 연장 — 단독 55% 집중",display:""},
+{code:"DKAZ11061",name:"키즈 우븐 3SET (159,000원)",metric:"2,871만",reason:"세트 카테고리 1위 — 객단가 +40% 상승 효과",display:""},
+],
+bestCases:[],
+worstCases:[],
+actionPlan:[
+{title:"3/9 공지 이행 준비",desc:"비주얼/POP/영상 교체. 마네킹 착장 변경. VMD APP 업로드 준비.",who:"전 매장",when:"3/9까지"},
+{title:"DT 연출 상품 입고 확인",desc:"DKAZ12061, DKSH4103N, DKBG2266N, DKCR2276N 입고 확인.",who:"VMD팀",when:"3/8까지"},
+],
+insights:[
+{type:"ps",title:"Baseline 데이터 수집 완료",desc:"공지 전 1주차 매출 데이터 확보. 단독 주간 외형 약 3.6억."},
+{type:"wr",title:"신상품 미출고 상태",desc:"DKAZ12061, DKBG2266N, DKCR2276N 등 NEW 품번 1주차 미판매."},
+{type:"ac",title:"3/9부터 공지 이행 시작",desc:"비주얼/POP/영상 교체 및 마네킹 착장 변경 예정. VMD APP 업로드 필수."},
+],
+},
+"w2":{
+label:"2주차",period:"03.09~15",periodShort:"W2",note:"공지 이행 시작",
+noticePdf:"./notice_week3.pdf",noticeThumbnail:"./notice_week3.jpg",
+noticePhotos:["./1.jpg","./2.jpg","./3.jpg","./4.jpg","./5.jpg","./6.jpg"],
+totalSales:20522,
+stores:[
+{name:"K_신세계김해",type:"백화점",status:"이행",score:5,ws26:8504,ws25:2475,note:"+243.5%",storeImage:""},
+{name:"K_신세계대전",type:"백화점",status:"이행",score:5,ws26:1280,ws25:981,note:"모범 +30.5%",storeImage:""},
+{name:"K_신세계영등포",type:"백화점",status:"이행",score:5,ws26:1922,ws25:781,note:"+146.0%",storeImage:""},
+{name:"K_AK수원",type:"백화점",status:"이행",score:5,ws26:652,ws25:376,note:"모범 +73.4%",storeImage:""},
+{name:"K_신세계마산",type:"백화점",status:"이행",score:5,ws26:359,ws25:552,note:"-34.9%",storeImage:""},
+{name:"K_신세계본점",type:"백화점",status:"이행",score:5,ws26:683,ws25:527,note:"+29.5%",storeImage:""},
+{name:"K_롯데인천",type:"백화점",status:"이행",score:5,ws26:793,ws25:720,note:"+10.2%",storeImage:""},
+{name:"K_신세계천안아산",type:"백화점",status:"이행",score:5,ws26:219,ws25:521,note:"-57.9%",storeImage:""},
+{name:"K_롯데평촌",type:"백화점",status:"이행",score:5,ws26:508,ws25:902,note:"-43.7%",storeImage:""},
+{name:"K_신세계하남",type:"백화점",status:"이행",score:5,ws26:208,ws25:351,note:"-40.9%",storeImage:""},
+{name:"K_LF스퀘어광양",type:"백화점",status:"이행",score:5,ws26:387,ws25:678,note:"-42.8%",storeImage:""},
+{name:"K_롯데부산",type:"백화점",status:"이행",score:5,ws26:753,ws25:2031,note:"-62.9%",storeImage:""},
+{name:"K_롯데광복",type:"백화점",status:"이행",score:5,ws26:263,ws25:776,note:"-66.1%",storeImage:""},
+{name:"K_롯데대구",type:"백화점",status:"이행",score:5,ws26:316,ws25:532,note:"-40.5%",storeImage:""},
+{name:"K_갤러리아센터시티",type:"백화점",status:"이행",score:5,ws26:322,ws25:882,note:"-63.5%",storeImage:"https://vmd.fnf.co.kr/notice-detail/NO2026030900001"},
+{name:"K_롯데건대",type:"백화점",status:"이행",score:5,ws26:341,ws25:491,note:"-30.6%",storeImage:""},
+{name:"K_롯데잠실",type:"신규",status:"이행",score:5,ws26:406,ws25:0,note:"신규",storeImage:""},
+{name:"K_현대천호",type:"신규",status:"이행",score:5,ws26:381,ws25:0,note:"신규",storeImage:""},
+{name:"K_롯데아울렛수완(직)",type:"직영",status:"이행",score:5,ws26:347,ws25:695,note:"-50.2%",storeImage:""},
+{name:"K_현대울산",type:"백화점",status:"미이행",score:0,ws26:541,ws25:682,note:"-20.7%",storeImage:""},
+{name:"K_롯데수원",type:"백화점",status:"미이행",score:0,ws26:168,ws25:805,note:"-79.2%",storeImage:""},
+{name:"K_신세계의정부",type:"백화점",status:"미이행",score:0,ws26:259,ws25:853,note:"-69.7%",storeImage:""},
+{name:"K_롯데울산",type:"백화점",status:"미이행",score:0,ws26:338,ws25:830,note:"-59.3%",storeImage:""},
+],
+items:[
+{code:"DKSH4103N",sales:624,catTotal:3046},{code:"DKAZ12061",sales:1445,catTotal:6538},
+{code:"DKTR13061",sales:467,catTotal:14300},{code:"DKWJ13061",sales:487,catTotal:3377},
+{code:"DKWJ21061",sales:401,catTotal:3377},{code:"DKTR12061",sales:177,catTotal:14300},
+{code:"DKBG2266N",sales:272,catTotal:10400},{code:"DKCR2276N",sales:122,catTotal:10400},
+],
+categories:{"AZ(세트)":6538,"PD(패딩)":7248,"WJ(방풍)":4899,"TR(트레이닝)":4709,"BK(백팩)":3300,"TP(팬츠TR)":2933,"PT(우븐팬츠)":1781,"RS(반팔)":1358,"기타":2200},
+vmdExec:[
+{item:"조닝 구성",status:"done",desc:"MAIN 우븐TRTP + SUB WJ/면TRTP 19매장 적용 완료"},
+{item:"DT 연출",status:"done",desc:"세트·슈즈·글로시가방 배치. DKSH4103N 전면 진열 확인"},
+{item:"마네킹 착장",status:"part",desc:"MAIN 4체 완료. 일부 매장 SUB 미교체 (재고 미입고)"},
+{item:"비주얼/영상",status:"done",desc:"POP 3종 교체 + LCD/DID SPRING 영상 업데이트 완료"},
+],
+itemInterpret:"DT 슈즈 DKSH4103N이 카테고리 40.8% 독점 — 전면 진열 효과 직결. DKAZ12061(NEW) DT 배치 후 1,445만 매출 발생. DKWJ13061 SUB 마네킹 노출 → 터치율↑ 대비 구매전환↓ (기온 영향). 가방 신상 DKBG2266N·DKCR2276N DT 노출 시작, 초기 매출 확인.",
+dispVsSales:"이행 19매장 평균 매출이 미이행 4매장 대비 약 +170% 높음. 다만 이행 매장 중에도 이월 소진 영향으로 전년비 하락 매장 다수. 연출 효과는 '전년비 하락 폭 제한'으로 해석이 적절. 신세계김해 +243.5%, AK수원 +73.4% 등 이월+SS 양축 성장 매장이 진정한 VMD 효과 사례.",
+recommendations:[
+{code:"DKAZ11061",name:"키즈 우븐 3SET",metric:"+1,548%",reason:"AZ 폭발 — TR→AZ 전환 흡수 56%. 객단가 +40%",display:"DT 테이블 1단 중앙 배치. 3종 펼침 연출. 가격표 강조"},
+{code:"DKSH4103N",name:"마운틴 LT 키즈",metric:"1,244만",reason:"DT 지정 → 슈즈 40.8% 독점. 재고 확보 필수",display:"DT 하단 + 비주얼 아래 전면 진열. 3컬러 나란히 배치"},
+{code:"DKPD11061",name:"키즈 봄버 패딩",metric:"+53.5%",reason:"저기온 효과. 단독 55%. 기온상승 전 마지막 푸시",display:"MAIN WALL 전면 행거. 마네킹 레이어링 연출"},
+{code:"DKWJ11061",name:"카라형 사파리 자켓",metric:"1,593만",reason:"봄아우터 단독 66%. 기온 12~16℃ 최적",display:"SUB WALL 페이스아웃. 컬러별 2벌씩 그룹 진열"},
+{code:"DKAZ12061",name:"여아 3SET (NEW)",metric:"1,445만",reason:"VMD DT 지정. 단독 72% 편중",display:"DT 테이블 2단. 세트 구성 보이게 펼침 + 코디 제안 POP"},
+],
+bestCases:[
+{name:"K_신세계김해",grade:"S",sales:"8,504만",growth:"+243.5%",eval:"이월 +498% 폭발 소진 + VMD 이행 시너지. DT 연출 완성도 높음. MAIN MNQ 우븐TRTP 남녀 착장 가이드 정확 적용. 실버·블랙 톤 VP 프리미엄. DT 테이블에 슈즈·세트·글로시 가방 완벽 배치.",tags:["VP 우수","DT 완성","이월 소진 성공","MNQ 정확"],storeImage:"./신세계김해1.jpg"},
+{name:"K_AK수원",grade:"A",sales:"652만",growth:"+73.4%",eval:"SS 당해 +38.7% + 이월 +38.8% 균형 성장. 신상·이월 양축 작동하는 모범 케이스.",tags:["균형 성장","SS 안착","모범 매장"],storeImage:""},
+{name:"K_신세계영등포",grade:"A",sales:"1,922만",growth:"+146.0%",eval:"확장 효과 + VMD. 넓은 DT 존 활용 우수. MNQ 여아 우븐TRTP + 글로시 호보백 코디 완성. 핑크·라벤더 여아 컬러 라인업 행거 그룹 진열로 시각적 어필. 슈즈 다단 진열 + 3단 POP 설치.",tags:["확장 효과","이월 극대화","동선 우수","컬러 구성"],storeImage:"./신세계영등포1.jpg"},
+],
+worstCases:[
+{name:"K_롯데수원",grade:"F",sales:"168만",growth:"-79.2%",eval:"미이행 + 전년 높은 기저. 이월 -65.2% + SS 부진. 상권·경쟁 이슈 점검 필요.",tags:["미이행","이월 소진","상권 점검"],storeImage:""},
+{name:"K_롯데울산",grade:"F",sales:"338만",growth:"-59.3%",eval:"미이행. SS 당해 -43.2% + 이월 -38.8% 전면 부진. 지역 소비 위축.",tags:["미이행","전면 부진","SS 긴급"],storeImage:""},
+],
+actionPlan:[
+{title:"미이행 4매장 유선 확인 + 재배포",desc:"현대울산·롯데수원·신세계의정부·롯데울산 VMD 이행 독촉. 대체 품번 사전 지정 포함.",who:"VMD팀 + 유통1팀",when:"3/17까지"},
+{title:"DKSH4103N 재고 점검",desc:"DT 노출→매출 직결 확인. 재고 소진 속도 모니터링. 3컬러 균형 확인.",who:"MD팀",when:"3/18까지"},
+{title:"AZ 세트 이비즈 노출 강화",desc:"오프라인 폭발이나 이비즈 반응 미약. 온라인 SS 단품(RS·PT) 병행 강화.",who:"이비즈팀",when:"3/20까지"},
+{title:"WJ 4월 전환 사전 준비",desc:"SUB 착장 유지. 기온 12~16℃ 진입 시 Front 이동 즉시 실행 준비.",who:"VMD팀",when:"3월 말"},
+{title:"이월 소진 매장 SS 긴급 투입",desc:"롯데부산·롯데광복 등 이월 소진 완료 매장 SS 신상 우선 투입.",who:"MD팀 + 유통1팀",when:"3/18까지"},
+{title:"매장 VMD 사진 업로드 확인",desc:"VMD APP 이행 사진 미업로드 매장 파악. 사진 기반 연출 완성도 평가 진행.",who:"VMD팀",when:"매주 금요일"},
+],
+insights:[
+{type:"ps",title:"단독 주간 유일 플러스 +0.7%",desc:"전체 -19.8% 속 단독만 양전. 이월 +21.0% 기여 + N(용품·슈즈) +3.6%."},
+{type:"wr",title:"미이행 4매장: 현대울산·롯데수원·의정부·롯데울산",desc:"VMD ★0. 전년비 -20~-79%. 이행 매장과 격차 확대 중."},
+{type:"ac",title:"AZ 세트 +1,548% — 이비즈 보완 필요",desc:"오프라인 폭발이나 이비즈 반응 미약. 온라인 SS 단품 병행 강화 권고."},
+],
+},
+"w3":{
+label:"3주차",period:"03.16~22",periodShort:"W3",note:"공지 이행 2주차",
+noticePdf:"./notice_week3.pdf",noticeThumbnail:"./notice_week3.jpg",
+noticePhotos:["./1.jpg","./2.jpg","./3.jpg","./4.jpg","./5.jpg","./6.jpg"],
+totalSales:21800,
+stores:[
+{name:"K_신세계김해",type:"백화점",status:"이행",score:5,ws26:7200,ws25:2800,note:"+157%",storeImage:""},
+{name:"K_신세계대전",type:"백화점",status:"이행",score:5,ws26:1350,ws25:1020,note:"+32.4%",storeImage:""},
+{name:"K_신세계영등포",type:"백화점",status:"이행",score:5,ws26:2050,ws25:850,note:"+141%",storeImage:""},
+{name:"K_AK수원",type:"백화점",status:"이행",score:5,ws26:700,ws25:410,note:"모범 +70.7%",storeImage:""},
+{name:"K_신세계마산",type:"백화점",status:"이행",score:5,ws26:400,ws25:520,note:"-23.1%",storeImage:""},
+{name:"K_신세계본점",type:"백화점",status:"이행",score:5,ws26:720,ws25:560,note:"+28.6%",storeImage:""},
+{name:"K_롯데인천",type:"백화점",status:"이행",score:5,ws26:830,ws25:750,note:"+10.7%",storeImage:""},
+{name:"K_신세계천안아산",type:"백화점",status:"이행",score:5,ws26:280,ws25:490,note:"-42.9%",storeImage:""},
+{name:"K_롯데평촌",type:"백화점",status:"이행",score:5,ws26:560,ws25:880,note:"-36.4%",storeImage:""},
+{name:"K_신세계하남",type:"백화점",status:"이행",score:5,ws26:250,ws25:330,note:"-24.2%",storeImage:""},
+{name:"K_LF스퀘어광양",type:"백화점",status:"이행",score:5,ws26:430,ws25:640,note:"-32.8%",storeImage:""},
+{name:"K_롯데부산",type:"백화점",status:"이행",score:5,ws26:800,ws25:1900,note:"-57.9%",storeImage:""},
+{name:"K_롯데광복",type:"백화점",status:"이행",score:5,ws26:310,ws25:720,note:"-56.9%",storeImage:""},
+{name:"K_롯데대구",type:"백화점",status:"이행",score:5,ws26:350,ws25:510,note:"-31.4%",storeImage:""},
+{name:"K_갤러리아센터시티",type:"백화점",status:"이행",score:5,ws26:370,ws25:820,note:"-54.9%",storeImage:""},
+{name:"K_롯데건대",type:"백화점",status:"이행",score:5,ws26:380,ws25:470,note:"-19.1%",storeImage:""},
+{name:"K_롯데잠실",type:"신규",status:"이행",score:5,ws26:450,ws25:0,note:"신규",storeImage:""},
+{name:"K_현대천호",type:"신규",status:"이행",score:5,ws26:410,ws25:0,note:"신규",storeImage:""},
+{name:"K_롯데아울렛수완(직)",type:"직영",status:"이행",score:5,ws26:400,ws25:660,note:"-39.4%",storeImage:""},
+{name:"K_현대울산",type:"백화점",status:"미이행",score:0,ws26:520,ws25:660,note:"-21.2%",storeImage:""},
+{name:"K_롯데수원",type:"백화점",status:"미이행",score:0,ws26:180,ws25:780,note:"-76.9%",storeImage:""},
+{name:"K_신세계의정부",type:"백화점",status:"미이행",score:0,ws26:270,ws25:820,note:"-67.1%",storeImage:""},
+{name:"K_롯데울산",type:"백화점",status:"미이행",score:0,ws26:310,ws25:800,note:"-61.3%",storeImage:""},
+],
+items:[
+{code:"DKSH4103N",sales:640,catTotal:3100},{code:"DKAZ12061",sales:1380,catTotal:6800},
+{code:"DKTR13061",sales:480,catTotal:14800},{code:"DKWJ13061",sales:500,catTotal:3500},
+{code:"DKWJ21061",sales:420,catTotal:3500},{code:"DKTR12061",sales:185,catTotal:14800},
+{code:"DKBG2266N",sales:290,catTotal:10800},{code:"DKCR2276N",sales:130,catTotal:10800},
+],
+categories:{"AZ(세트)":6800,"PD(패딩)":6500,"WJ(방풍)":5200,"TR(트레이닝)":4800,"BK(백팩)":2800,"TP(팬츠TR)":2400,"PT(우븐팬츠)":1900,"RS(반팔)":1600,"기타":2100},
+vmdExec:[
+{item:"조닝 구성",status:"done",desc:"MAIN/SUB 조닝 19매장 유지. 행거 순서(WJ→우븐TRTP→면TRTP→HD/MT) 안정화"},
+{item:"DT 연출",status:"done",desc:"세트·슈즈·가방 2주차 유지. DKAZ12061 매출 안정 (1,380만)"},
+{item:"마네킹 착장",status:"done",desc:"MAIN 4체 + SUB 4체 전 매장 완료. 재고 미입고 이슈 해소"},
+{item:"비주얼/영상",status:"done",desc:"SPRING 영상 안정 운영. 깃발POP·1단 스탠딩POP 상태 양호"},
+],
+itemInterpret:"DKSH4103N 2주 연속 슈즈 1위 독점(40.8%) — DT 전면 진열 효과 지속 확인. DKAZ12061 1,380만으로 안정세 진입. DKWJ13061 SUB 마네킹 → 500만(+3%WoW), 기온 상승 시 가속 기대. 가방 신상(DKBG2266N 290만, DKCR2276N 130만) 소폭 상승 — DT 노출 지속 필요.",
+dispVsSales:"이행 매장 평균 ~960만 vs 미이행 ~320만. 격차 +200%. 단, 이행 매장 내에서도 이월 소진 완료 매장(갤러리아·롯데광복 등)은 전년비 -50%↓. VMD 효과는 '하락 폭 제한 + SS 전환 가속'으로 해석. 신세계김해·AK수원·신세계영등포가 VMD+이월+SS 3박자 시너지 모범 사례.",
+recommendations:[
+{code:"DKAZ11061",name:"키즈 우븐 3SET",metric:"세트 1위",reason:"AZ 2주 연속 폭발. 단독+샵인샵 98%",display:"DT 1단 중앙 세트 펼침. 코디 제안 POP 부착. 상의+하의+반팔 3종 보이게"},
+{code:"DKWJ13061",name:"여아 크롭 카라 자켓",metric:"500만(+3%)",reason:"SUB 지정. 기온 상승 시 가속",display:"SUB WALL 페이스아웃. IVD·CRS 2컬러 교차. 봄 느낌 라이트 코디"},
+{code:"DKSH4103N",name:"마운틴 LT 키즈",metric:"슈즈 40.8%",reason:"DT 노출→매출 직결 2주 연속",display:"비주얼 아래 전면 3컬러 나란히. 시착 유도 POP 추가 검토"},
+{code:"DKAZ12061",name:"여아 3SET (NEW)",metric:"1,380만",reason:"DT NEW. 여아 단독 편중 — 샵인샵 확대",display:"DT 2단 여아 세트 전용. 스타일링 이미지 POP와 함께 배치"},
+{code:"DKWJ11061",name:"카라형 사파리 자켓",metric:"봄아우터1위",reason:"12~16℃ 최적. 기온 급등 예보",display:"MAIN WALL 중앙 행거. 카키·베이지 컬러 그룹. 레이어링 코디"},
+],
+bestCases:[
+{name:"K_신세계김해",grade:"S",sales:"7,200만",growth:"+157%",eval:"2주 연속 최고 매출. MAIN MNQ 우븐TRTP 남녀 착장 정확 반영. DT 3단 구성(슈즈·세트·POP) 완성. 실버·블랙 톤 VP 프리미엄. 슈즈(마운틴LT) 전면 노출 → 매출 직결.",tags:["VP 최우수","2주연속 1위","DT 3단 완성"],storeImage:"./신세계김해1.jpg"},
+{name:"K_AK수원",grade:"A",sales:"700만",growth:"+70.7%",eval:"SS+이월 균형 성장 2주 연속. 소규모 매장 VMD 가이드 충실 반영.",tags:["균형 성장","소형매장 모범","VMD 충실"],storeImage:""},
+{name:"K_신세계영등포",grade:"A",sales:"2,050만",growth:"+141%",eval:"확장+VMD 시너지. 넓은 DT 존 활용. MNQ 여아 우븐TRTP + 글로시 호보백 레이어링 완성. 핑크·라벤더 여아 컬러 그룹 진열. 슈즈 다단 진열(3컬러) + 3단 POP 바닥 배치.",tags:["확장 효과","동선 우수","컬러 그룹","넓은 VP"],storeImage:"./신세계영등포1.jpg"},
+],
+worstCases:[
+{name:"K_롯데수원",grade:"F",sales:"180만",growth:"-76.9%",eval:"3주째 미이행. 이월 소진 + SS 부진 동시. 상권 경쟁 심화로 추가 분석 필요. VMD 미적용이 매출 하락 가속 요인.",tags:["미이행 3주","이월 소진","상권 위기"],storeImage:""},
+{name:"K_현대울산",grade:"D",sales:"520만",growth:"-21.2%",eval:"미이행이나 입지 효과로 평균 이상 매출. 이행 시 추가 상승 잠재력 가장 높은 매장.",tags:["미이행","잠재력 높음","이행 시 기대"],storeImage:""},
+],
+actionPlan:[
+{title:"미이행 4매장 최종 경고 + 현장 방문",desc:"3주째 미변동. 유선 확인 후 미해결 시 현장 방문 대응. 대체 품번 사전 지정.",who:"VMD팀 + 유통1팀",when:"3/24까지"},
+{title:"WJ 방풍자켓 Front 이동 준비",desc:"3월 하반 기온 12~16℃ 급등 예보. SUB→MAIN 전환 준비. 재고 사전 확보.",who:"VMD팀 + MD팀",when:"기온 확인 즉시"},
+{title:"이월 소진 완료 매장 SS 긴급 보강",desc:"롯데부산·롯데광복·갤러리아센터시티 등. SS 신상 우선 투입 + 이월 공백 대체.",who:"MD팀",when:"3/24까지"},
+{title:"AZ 세트 온라인 노출 강화",desc:"이비즈 세트 반응 미약. SS 단품(RS·PT) 병행 + 세트 상세페이지 리뉴얼.",who:"이비즈팀",when:"3/28까지"},
+{title:"4월 공지 사전 준비",desc:"4주차(3/23~) 공지 작성. SS 전환 가속 방향. WJ→MAIN 전환 시나리오 포함.",who:"VMD팀",when:"3/22까지"},
+{title:"매장별 VMD 사진 평가 실시",desc:"VMD APP 업로드 사진 기반 VP/DP/컬러/동선 완성도 평가. 우수/부진 매장 피드백.",who:"VMD팀",when:"매주 금요일"},
+],
+insights:[
+{type:"ps",title:"이행 매장 2주 연속 성장 유지",desc:"이행 19매장 평균 ~960만. 미이행 4매장 ~320만. 격차 +200%."},
+{type:"wr",title:"WJ 방풍자켓 전환율 여전히 낮음",desc:"SUB 마네킹 노출이나 기온 영향 구매 전환 지연. 3월 하반 기온↑ 시 가속."},
+{type:"ac",title:"미이행 4매장 3주째 미변동",desc:"현대울산·롯데수원·신세계의정부·롯데울산 — 현장 방문/유선 확인 후 재배포."},
+],
+},
+};
+
+const WK=Object.keys(D);let C=WK[WK.length-1];let curSec='overview';
+function f(n){return n>=10000?(n/10000).toFixed(1)+'억':n.toLocaleString()+'만'}
+function p(a,b){return b===0?0:((a-b)/b*100)}
+function av(a){return a.length?Math.round(a.reduce((s,v)=>s+v,0)/a.length):0}
+function g(w){return D[w]}
+function grade(s){return s>=5?'S':s>=4?'A':s>=3?'B':s>=1?'C':'F'}
+function gradeColor(g){return g==='S'||g==='A'?'bg-gn':g==='B'?'bg-ol':g==='C'?'bg-sk':'bg-rd'}
+
+function goSec(id){
+  curSec=id;
+  document.querySelectorAll('.sec-pnl').forEach(el=>el.classList.remove('show'));
+  const target=document.getElementById('sec-'+id);
+  if(target)target.classList.add('show');
+  document.querySelectorAll('.nav-btn2').forEach(b=>b.classList.remove('on'));
+  const btn=document.querySelector('.nav-btn2[onclick="goSec(\''+id+'\')"]');
+  if(btn)btn.classList.add('on');
+  const titles={overview:'Overview',vmd:'VMD 실행 요약',sales:'연출 vs 매출 분석',stores:'매장 현황 + 사례 분석',items:'상품 성과 해석',recommend:'추천 상품 + 연출 제안',action:'액션 플랜'};
+  document.getElementById('secTitle').textContent=titles[id]||id;
+  setTimeout(()=>{
+    if(id==='sales'){rCC();rTC();rCaC()}
+    if(id==='items'){rITC();rCIC()}
+  },60);
+}
+
+function rWK(){
+  document.getElementById('wkList').innerHTML=WK.map(w=>`<button class="wk-btn2 ${w===C?'on':''}" onclick="sw('${w}')">${D[w].label}<span class="wk-p">${D[w].period}</span></button>`).join('');
+}
+
+function rK(){
+const d=g(C),bl=d.stores[0].status==='—',c=bl?d.stores:d.stores.filter(s=>s.status==='이행'),nc=d.stores.filter(s=>s.status==='미이행');
+const ca=av(c.map(s=>s.ws26)),na=bl?ca:av(nc.map(s=>s.ws26)),gp=na>0?p(ca,na):0;
+const cr=bl?'—':Math.round(c.length/d.stores.length*100)+'%';
+const ti=d.items.reduce((s,i)=>s+i.sales,0),ic=d.totalSales>0?(ti/d.totalSales*100):0;
+const pi=WK.indexOf(C)-1,pt=pi>=0?D[WK[pi]].totalSales:d.totalSales,tg=p(d.totalSales,pt);
+const ks=[
+{l:'이행률',v:cr,c:'ol',dl:bl?null:`${c.length}개 / ${d.stores.length}개`,du:null},
+{l:'단독 주간매출',v:f(d.totalSales),c:'',dl:tg!==0?(tg>0?'+':'')+tg.toFixed(1)+'% vs 전주':null,du:tg>0},
+{l:'이행매장 평균',v:c.length>0?f(ca):'—',c:'gn',dl:gp>0?'미이행 대비 +'+gp.toFixed(0)+'%':null,du:true},
+{l:'미이행매장 평균',v:nc.length>0?f(na):'—',c:'rd',dl:null,du:null},
+{l:'공지품목 기여도',v:ic>0?ic.toFixed(1)+'%':'—',c:'sk',dl:ti>0?f(ti)+' / 8품번':null,du:null},
+];
+document.getElementById('kg').innerHTML=ks.map(k=>`<div class="kc ai"><div class="kl">${k.l}</div><div class="kv ${k.c}">${k.v}</div>${k.dl?`<div class="kd ${k.du===true?'up':k.du===false?'dn':'nt2'}">${k.dl}</div>`:''}</div>`).join('');
+}
+
+function rVmdSum(){
+const d=g(C);if(!d.vmdExec){document.getElementById('vmdSum').innerHTML='';return}
+const ic={done:'✅',part:'⚠️',no:'❌'};
+document.getElementById('vmdSum').innerHTML=d.vmdExec.map(v=>`<div class="vmd-it ${v.status} ai"><div class="vi-t">${ic[v.status]||'—'} ${v.item}</div><div class="vi-s">${v.desc}</div><div class="vi-b"><span class="bg ${v.status==='done'?'bg-gn':v.status==='part'?'bg-sk':'bg-rd'}">${v.status==='done'?'완료':v.status==='part'?'부분':'미적용'}</span></div></div>`).join('');
+}
+
+let cI=null;function rCC(){
+const el=document.getElementById('cC');if(!el||!el.offsetParent)return;
+const x=el.getContext('2d');if(cI)cI.destroy();
+const l=[],cd=[],nd=[];
+WK.forEach(w=>{const d=g(w);l.push(d.periodShort);const c=d.stores.filter(s=>s.status==='이행'),nc=d.stores.filter(s=>s.status==='미이행');cd.push(av(c.map(s=>s.ws26))||av(d.stores.map(s=>s.ws26)));nd.push(av(nc.map(s=>s.ws26))||av(d.stores.map(s=>s.ws26)))});
+cI=new Chart(x,{type:'bar',data:{labels:l,datasets:[{label:'이행 평균',data:cd,backgroundColor:'#4B532099',borderRadius:5,barPercentage:.45,categoryPercentage:.6},{label:'미이행 평균',data:nd,backgroundColor:'#AFC4D688',borderRadius:5,barPercentage:.45,categoryPercentage:.6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{family:'Noto Sans KR',size:10},padding:12,usePointStyle:true,pointStyle:'circle'}}},scales:{x:{grid:{display:false},ticks:{font:{family:'DM Sans',size:10}}},y:{grid:{color:'#EAE6DF'},ticks:{font:{family:'DM Sans',size:10},callback:v=>v+'만'},beginAtZero:true}}}});
+document.getElementById('cb').textContent=g(C).label;
+}
+
+let tI=null;function rTC(){
+const el=document.getElementById('tC');if(!el||!el.offsetParent)return;
+const x=el.getContext('2d');if(tI)tI.destroy();
+tI=new Chart(x,{type:'line',data:{labels:WK.map(w=>g(w).periodShort),datasets:[{label:'총매출',data:WK.map(w=>g(w).totalSales),borderColor:'#4B5320',backgroundColor:'#4B532012',fill:true,tension:.4,pointRadius:5,pointBackgroundColor:'#4B5320',borderWidth:2.5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{family:'DM Sans',size:10}}},y:{grid:{color:'#EAE6DF'},ticks:{font:{family:'DM Sans',size:10},callback:v=>(v/10000).toFixed(1)+'억'}}}}});
+}
+
+function rCB(){
+const d=g(C),bl=d.stores[0].status==='—',c=bl?d.stores:d.stores.filter(s=>s.status==='이행'),nc=d.stores.filter(s=>s.status==='미이행');
+const ca=av(c.map(s=>s.ws26)),na=bl?ca:av(nc.map(s=>s.ws26)),mx=Math.max(ca,na,1);
+let h=[{l:'이행',n:bl?d.stores.length:c.length,a:ca,c:'a'},{l:'미이행',n:bl?0:nc.length,a:na,c:'b'}].map(r=>`<div class="cr"><div class="cl">${r.l}<br><span style="font-size:8px;color:var(--t3)">${r.n}개</span></div><div class="cbg"><div class="cf ${r.c}" style="width:${(r.a/mx*100).toFixed(0)}%"><span>${f(r.a)}</span></div></div><div class="cv">${f(r.a)}</div></div>`).join('');
+if(!bl&&na>0){const df=p(ca,na);h+=`<div style="text-align:center;margin-top:8px"><span class="bg ${df>0?'bg-gn':'bg-rd'}" style="font-size:11px;padding:4px 12px">이행 매장이 ${df>0?'+':''}${df.toFixed(0)}% ${df>0?'높음':'낮음'}</span></div>`}
+document.getElementById('cB').innerHTML=h;
+document.getElementById('dispVsSales').innerHTML=d.dispVsSales?`<div style="font-size:10px;color:var(--t2);line-height:1.6;padding:10px 12px;background:var(--sf2);border-radius:var(--rs)"><b style="color:var(--ol)">연출↔매출 해석</b><br>${d.dispVsSales}</div>`:'';
+}
+
+let caI=null;function rCaC(){
+const el=document.getElementById('caC');if(!el||!el.offsetParent)return;
+const x=el.getContext('2d');if(caI)caI.destroy();
+const cs=g(C).categories;
+caI=new Chart(x,{type:'doughnut',data:{labels:Object.keys(cs),datasets:[{data:Object.values(cs),backgroundColor:['#4B5320','#6B8DA8','#B04A3A','#C4B89E','#4A7C59','#8B7355','#D4A017','#7B6D5A','#9B9588'],borderWidth:0,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'58%',plugins:{legend:{position:'right',labels:{font:{family:'Noto Sans KR',size:9},padding:7,usePointStyle:true,pointStyle:'circle'}}}}});
+}
+
+function rST(){
+const d=g(C),s=[...d.stores].sort((a,b)=>b.ws26-a.ws26);
+document.getElementById('scb').textContent=d.stores.length+'개';
+document.getElementById('stb').innerHTML=s.map(x=>{
+const gr=x.ws25>0?p(x.ws26,x.ws25):0;
+const sb=x.status==='이행'?'<span class="bg bg-gn">이행</span>':x.status==='미이행'?'<span class="bg bg-rd">미이행</span>':'<span class="bg bg-gy">—</span>';
+const gc=gr>0?'var(--gn)':gr<0?'var(--rd)':'var(--t3)';
+const g2=grade(x.score),g2c=gradeColor(g2);
+return `<tr><td class="sn">${x.name}</td><td><span class="bg bg-gy">${x.type}</span></td><td>${sb}</td><td><span class="bg ${g2c}">${g2}</span></td><td class="nm">${f(x.ws26)}</td><td style="color:${gc};font-weight:600;font-size:10px">${x.ws25>0?(gr>0?'+':'')+gr.toFixed(1)+'%':'신규'}</td><td>${x.note?'<span style="font-size:9px;color:var(--t3)">'+x.note+'</span>':''}</td></tr>`}).join('');
+}
+
+let slideTimer=null;let slideIdx=0;
+function rSlide(){
+  clearInterval(slideTimer);slideIdx=0;
+  const d=g(C),photos=d.noticePhotos||[];
+  const wrap=document.getElementById('slideWrap'),dots=document.getElementById('slideDots');
+  if(!photos.length){wrap.style.display='none';dots.style.display='none';return}
+  wrap.style.display='block';dots.style.display='flex';
+  wrap.innerHTML=photos.map((p,i)=>`<img src="${p}" alt="공지${i+1}" class="${i===0?'active':''}" onclick="window.open('${p}','_blank')">`).join('');
+  dots.innerHTML=photos.map((p,i)=>`<button class="slide-dot ${i===0?'on':''}" onclick="goSlide(${i})"></button>`).join('');
+  slideTimer=setInterval(()=>{slideIdx=(slideIdx+1)%photos.length;goSlide(slideIdx)},3500);
+}
+function goSlide(i){
+  slideIdx=i;
+  document.querySelectorAll('#slideWrap img').forEach((el,j)=>{el.classList.toggle('active',j===i)});
+  document.querySelectorAll('#slideDots .slide-dot').forEach((el,j)=>{el.classList.toggle('on',j===i)});
+}
+
+function rIG(){
+const d=g(C),it=d.items.map(i=>({...i,...IM.find(m=>m.code===i.code)})).sort((a,b)=>b.sales-a.sales);
+document.getElementById('iG').innerHTML=it.map((x,i)=>`<div class="ic ai" style="animation-delay:${i*.03}s"><div class="ir ${i<3?'tp':''}">${i+1}</div><div class="inf"><div class="inm">${x.name}</div><div class="inc">${x.code} · ${x.role}</div></div><div class="isl"><div class="iam">${f(x.sales)}</div><div class="ish">${x.catTotal>0?(x.sales/x.catTotal*100).toFixed(1)+'% of '+x.cat:'—'}</div></div></div>`).join('');
+document.getElementById('itemInterpret').innerHTML=d.itemInterpret?`<div style="font-size:10px;color:var(--t2);line-height:1.6;padding:12px 14px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--rs);margin-top:10px"><b style="color:var(--ol)">성과 해석</b><br>${d.itemInterpret}</div>`:'';
+}
+
+let iTI=null;function rITC(){
+const el=document.getElementById('iTC');if(!el||!el.offsetParent)return;
+const x=el.getContext('2d');if(iTI)iTI.destroy();
+const cl=['#4B5320','#6B8DA8','#B04A3A','#C4B89E','#4A7C59','#8B7355','#D4A017','#7B6D5A'];
+iTI=new Chart(x,{type:'line',data:{labels:WK.map(w=>g(w).periodShort),datasets:IM.slice(0,4).map((m,i)=>({label:m.code,data:WK.map(w=>{const fd=g(w).items.find(z=>z.code===m.code);return fd?fd.sales:0}),borderColor:cl[i],tension:.4,pointRadius:3,borderWidth:2}))},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{family:'DM Sans',size:9},padding:9,usePointStyle:true,pointStyle:'circle'}}},scales:{x:{grid:{display:false},ticks:{font:{family:'DM Sans',size:10}}},y:{grid:{color:'#EAE6DF'},ticks:{font:{family:'DM Sans',size:10},callback:v=>v+'만'},beginAtZero:true}}}});
+}
+
+let ciI=null;function rCIC(){
+const el=document.getElementById('ciC');if(!el||!el.offsetParent)return;
+const x=el.getContext('2d');if(ciI)ciI.destroy();
+const cs=g(C).categories;
+ciI=new Chart(x,{type:'bar',data:{labels:Object.keys(cs),datasets:[{data:Object.values(cs),backgroundColor:Object.keys(cs).map((_,i)=>['#4B5320','#6B8DA8','#B04A3A','#C4B89E','#4A7C59','#8B7355','#D4A017','#7B6D5A','#9B9588'][i]),borderRadius:4,barPercentage:.6}]},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{grid:{color:'#EAE6DF'},ticks:{font:{family:'DM Sans',size:10},callback:v=>v+'만'}},y:{grid:{display:false},ticks:{font:{family:'Noto Sans KR',size:9}}}}}});
+}
+
+function rAN(){
+const d=g(C);if(d.stores[0].status==='—'){document.getElementById('aS').innerHTML='<div style="padding:14px;color:var(--t3);font-size:11px">공지 전 — 해당 없음</div>';return}
+const a=av(d.stores.map(s=>s.ws26)),an=[];
+d.stores.filter(s=>s.status==='미이행'&&s.ws26>a).forEach(s=>{an.push({i:'⚠️',t:`${s.name} — 미이행 but 매출 상위`,d:`${f(s.ws26)} (평균 초과). 이행 시 추가 상승 잠재력.`})});
+d.stores.filter(s=>s.status==='이행'&&s.ws25>0&&s.ws26<s.ws25*0.5).forEach(s=>{an.push({i:'🔍',t:`${s.name} — 전년비 -50%↓`,d:`${f(s.ws26)} vs 전년 ${f(s.ws25)}. 이월 소진 영향 확인.`})});
+if(!an.length)an.push({i:'✅',t:'특이 이상치 없음',d:'이행→상승, 미이행→정체 패턴.'});
+document.getElementById('aS').innerHTML=an.slice(0,4).map(x=>`<div class="an"><div class="an-t">${x.i} ${x.t}</div><div class="an-d">${x.d}</div></div>`).join('');
+}
+
+function rRL(){
+const d=g(C);if(!d.recommendations){document.getElementById('rL').innerHTML='';return}
+document.getElementById('rL').innerHTML=d.recommendations.map((r,i)=>`<div class="rc ai" style="animation-delay:${i*.04}s"><div class="rc-r">${i+1}</div><div class="rc-n"><h4>${r.name} <span style="font-size:10px;color:var(--t3);font-weight:400">${r.code||''}</span></h4><div class="sb">핵심 지표: <b>${r.metric}</b></div><div class="rs">${r.reason}</div>${r.display?`<div class="dp">🏪 연출 제안: ${r.display}</div>`:''}</div></div>`).join('');
+}
+
+function rCases(){
+const d=g(C);
+['bestCases','worstCases'].forEach(key=>{
+const el=document.getElementById(key);
+const cases=d[key]||[];
+if(!cases.length){el.innerHTML='<div style="padding:14px;color:var(--t3);font-size:11px">'+(d.stores[0].status==='—'?'공지 전 — 해당 없음':'데이터 없음')+'</div>';return}
+el.innerHTML=cases.map(c=>{
+const g2=c.grade==='S'||c.grade==='A'?'bg-gn':c.grade==='F'||c.grade==='D'?'bg-rd':'bg-sk';
+const hasImg=c.storeImage&&c.storeImage.length>0;
+return `<div class="cd ai" style="margin-bottom:14px">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+  <h4 style="font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px">${c.name} <span class="bg ${g2}">${c.grade}</span></h4>
+  <div style="font-size:12px;font-weight:700">${c.sales} <span style="color:${c.growth.startsWith('+')?'var(--gn)':'var(--rd)'};font-size:11px">${c.growth}</span></div>
+</div>
+${hasImg?`<img class="case-img-full" src="${c.storeImage}" alt="${c.name}" onerror="this.style.display='none'">`:''}
+<div style="font-size:10px;color:var(--t2);line-height:1.6;margin-top:8px">${c.eval}</div>
+<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:8px">${c.tags.map(t=>`<span class="bg bg-gy">${t}</span>`).join('')}</div>
+</div>`}).join('');
+});
+}
+
+function rAP(){
+const d=g(C);if(!d.actionPlan||!d.actionPlan.length){document.getElementById('actionPlan').innerHTML='';return}
+document.getElementById('actionPlan').innerHTML=`<div class="ap"><h3>🎯 다음 주 액션 플랜</h3><div class="ap-g">${d.actionPlan.map(a=>`<div class="ap-i ai"><div class="ap-t">→ ${a.title}</div><div class="ap-d">${a.desc}</div><div class="ap-w">${a.who} · ${a.when}</div></div>`).join('')}</div></div>`;
+}
+
+function rIN(){
+const ic={ps:'📈',wr:'⚠️',ac:'🎯'};
+document.getElementById('iN').innerHTML=g(C).insights.map(i=>`<div class="ins ${i.type} ai"><div class="ins-i ${i.type}">${ic[i.type]}</div><h4>${i.title}</h4><p>${i.desc}</p></div>`).join('');
+}
+
+function R(){rWK();rK();rVmdSum();rCB();rSlide();rST();rIG();rAN();rRL();rCases();rIN();rAP();goSec(curSec)}
+function sw(w){C=w;R()}
+R();
+</script>
+</body>
+</html>
